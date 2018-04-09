@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>
+    <title>Introduction to HTML</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type="text/css">
+    body {
+        background-color: #f0f0f2;
+        margin: 0;
+        padding: 0;
+        font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        
+    }
+    div {
+        width: 600px;
+        margin: 5em auto;
+        padding: 50px;
+        background-color: #fff;
+        border-radius: 1em;
+    }
+    a:link, a:visited {
+        color: #38488f;
+        text-decoration: none;
+    }
+    @media (max-width: 700px) {
+        body {
+            background-color: #fff;
+        }
+        div {
+            width: auto;
+            margin: 0 auto;
+            border-radius: 0;
+            padding: 1em;
+        }
+    }
+    </style>    
+</head>
+
+<body>
+<div>
+    <h1></h1>
+
+                 <!--top_ad_placeholder-->
+<h1>Common Problems</h1>
+<ul>
+	<li><a href="#script">Writing <abbr class=initialism title="HyperText Markup Language">HTML</abbr> in a SCRIPT element</a></li>
+	<li><a href="#amp">Ampersands (&amp;'s) in <abbr class=initialism title="Uniform Resource Locator">URL</abbr>s</a></li>
+	<li><a href="#nesting">Incorrect nesting of elements</a></li>
+	<li><a href="#name">Using a NAME attribute with IMG or FORM</a></li>
+	<li><a href="#doctype-case">Using all lowercase letters in a DOCTYPE</a></li>
+	<li><a href="#missing-title">"Missing a required sub-element of HEAD"</a></li>
+	<li><a href="#xhtml-case">Uppercase letters in XHTML tags</a></li>
+</ul>
+<p class=note>If you think that another common problem deserves discussion here, please <a href="mailto:liam&#64;htmlh&#101;lp.com">let me know</a>.</p>
+<h2><a name=script>Writing <abbr class=initialism title="HyperText Markup Language">HTML</abbr> in a SCRIPT Element</a></h2>
+<p>A common error (and the most common source of erroneous bug reports for the <abbr class=initialism title="Web Design Group">WDG</abbr> <abbr class=initialism title="HyperText Markup Language">HTML</abbr> Validator) occurs when writing <abbr class=initialism title="HyperText Markup Language">HTML</abbr> tags within a <strong class=html><a href="/reference/html40/special/script.html">SCRIPT</a></strong> element:</p>
+<pre class=example><code class=html>&lt;script type="text/javascript"&gt;</code>
+<code class=javascript>&lt;!--
+  // This is an error!
+  <strong class=oops>document.write("&lt;/P&gt;");</strong>
+// --&gt;</code>
+<code class=html>&lt;/script&gt;</code></pre>
+<p>As mentioned in the
+<a href="http://www.w3.org/TR/html4/">HTML 4 Recommendation</a>'s note about
+<a href="http://www.w3.org/TR/html4/appendix/notes.html#h-B.3.2.1">specifying
+non-HTML data in element content</a>, end tags are recognized within
+<strong class=html>SCRIPT</strong> elements, but other kinds of
+markup--such as start tags and comments--are not.
+This is an unintuitive quirk of
+<abbr class=initialism title="Standard Generalized Markup Language">SGML</abbr>
+for elements defined to have CDATA content.</p>
+<p>Authors should avoid using strings such as "&lt;/P&gt;" in their embedded
+scripts. In JavaScript, authors may use a backslash to prevent the string
+from being parsed as markup:</p>
+<pre class=example><code class=html>&lt;script type="text/javascript"&gt;</code>
+<code class=javascript>&lt;!--
+  <strong>document.write("&lt;\/P&gt;");</strong>
+// --&gt;</code>
+<code class=html>&lt;/script&gt;</code></pre>
+
+<p>Note that in <strong><abbr class=initialiam
+title="Extensible HyperText Markup Language">XHTML</abbr></strong>,
+authors must also take care when using start tags within a
+<strong class=html>script</strong> element. For details, see the
+<a href="http://www.w3.org/TR/xhtml1/#h-4.8">Script and Style elements</a>
+section of the
+<a href="http://www.w3.org/TR/xhtml1/">XHTML 1.0 Recommendation</a>
+as well as the
+<a href="http://www.w3.org/TR/xhtml1/#C_4">HTML compatibility guideline for embedded scripts</a>.</p>
+
+<h2><a name=amp>Ampersands (&amp;'s) in <abbr class=initialism title="Uniform Resource Locator">URL</abbr>s</a></h2>
+
+<p>Another common error occurs when including a <abbr class=initialism title="Uniform Resource Locator">URL</abbr> which contains an ampersand ("&amp;"):</p>
+
+<p class=example><code class=html><span class=oops>&lt;!-- This is invalid! --&gt;
+&lt;a href="foo.cgi?chapter=1<strong>&amp;section</strong>=2<strong>&amp;copy</strong>=3<strong>&amp;lang</strong>=en"&gt;...&lt;/a&gt;</span></code></p>
+
+<p>This example generates an error for "unknown entity <strong class=html>section</strong>" because the "&amp;" is assumed to begin an <a href="/reference/html40/entities/" title="HTML 4.0 Entities">entity</a> reference. Browsers often recover safely from this kind of error, but real problems do occur in some cases.
+In this example, many browsers correctly convert
+<strong class=html>&amp;copy=3</strong> to
+<strong>&copy;=3</strong>, which may cause the link to fail.
+Since <strong class=html>&amp;lang;</strong> is the
+<abbr class=initialism title="HyperText Markup Language">HTML</abbr>
+entity for the left-pointing angle bracket, some browsers also convert
+<strong class=html>&amp;lang=en</strong> to
+<strong>&#9001;=en</strong>.
+And one old browser even finds the entity
+<strong class=html>&amp;sect;</strong>, converting
+<strong class=html>&amp;section=2</strong> to
+<strong>&sect;ion=2</strong>.</p>
+
+<p>To avoid problems with both validators and browsers, always use <strong class=html>&amp;amp;</strong> in place of <strong class=html>&amp;</strong>
+when writing <abbr class=initialism title="Uniform Resource Locator">URL</abbr>s in
+<abbr class=initialism title="HyperText Markup Language">HTML</abbr>:</p>
+
+<p class=example><code class=html>&lt;a href="foo.cgi?chapter=1<strong>&amp;amp;</strong>section=2<strong>&amp;amp;</strong>copy=3<strong>&amp;amp;</strong>lang=en"&gt;...&lt;/a&gt;</code></p>
+
+<p>Note that replacing <strong class=html>&amp;</strong> with
+<strong class=html>&amp;amp;</strong> is only done when
+writing the <abbr class=initialism title="Uniform Resource Locator">URL</abbr>
+<strong>in
+<abbr class=initialism title="HyperText Markup Language">HTML</abbr></strong>,
+where "&amp;" is a special character (along with "&lt;"
+and "&gt;"). When writing the same
+<abbr class=initialism title="Uniform Resource Locator">URL</abbr>
+in a plain text email message or in the location bar of your browser,
+you would use "&amp;" and <em>not</em> "&amp;amp;". With
+<abbr class=initialism title="HyperText Markup Language">HTML</abbr>,
+the browser translates "&amp;amp;" to "&amp;" so the Web server would only see
+"&amp;" and not "&amp;amp;" in the query string of the request.</p>
+
+<h2><a name=nesting>Incorrect Nesting of Elements</a></h2>
+<p>Elements in <abbr class=initialism title="HyperText Markup Language">HTML</abbr> cannot overlap each other. The following is invalid:</p>
+<p class=example><code class=html><strong class=oops>&lt;B&gt;&lt;I&gt;</strong>Incorrect nesting<strong class=oops>&lt;/B&gt;&lt;/I&gt;</strong></code></p>
+<p>In this example, the <strong class=html>B</strong> element is intended to <em>contain</em> an <strong class=html>I</strong> element. To be truly <em>contained</em> within the <strong class=html>B</strong> element, the <strong class=html>I</strong> element's end tag must occur before the <strong class=html>B</strong> element's end tag. The following is valid:</p>
+<p class=example><code class=html><strong>&lt;B&gt;&lt;I&gt;</strong>Correct nesting<strong>&lt;/I&gt;&lt;/B&gt;</strong></code></p>
+
+<h2><a name=name>Using a NAME attribute with IMG or FORM</a></h2>
+
+<p>This problem is discussed in detail at <cite><a href="http://www.cs.tut.fi/~jkorpela/forms/javascript.html#nameattr">JavaScript and HTML: possibilities and caveats</a></cite>.</p>
+
+<h2><a name="doctype-case">Using all lowercase letters in a DOCTYPE</a></h2>
+
+<p>In a <strong class=html><a href="doctype.html">DOCTYPE</a></strong>, the <em>formal public identifier</em>--the quoted string that appears after the <strong class=html>PUBLIC</strong> keyword--is case sensitive. A common error is to use the following:</p>
+
+<pre class=example><code class=html>&lt;!doctype html public <strong>"-//w3c//dtd html 4.0 transitional//en"</strong>&gt;</code></pre>
+
+<p>Here the formal public identifier (<abbr class=initialism>FPI</abbr>) is all lowercase. The validator does not recognize the document as HTML 4.0 Transitional since the expected FPI for HTML 4.0 Transitional uses different case:</p>
+
+<pre class=example><code class=html>&lt;!doctype html public <strong>"-//W3C//DTD HTML 4.0 Transitional//EN"</strong>&gt;</code></pre>
+
+<h2><a name="missing-title">"Missing a required sub-element of HEAD"</a></h2>
+
+<p>If you receive the error "Missing a required sub-element of
+<strong class=html><a href="/reference/html40/head/head.html">HEAD</a></strong>",
+check that you have included the <strong class=html><a href="/reference/html40/head/title.html">TITLE</a></strong> element in the <strong class=html>HEAD</strong>. The
+<strong class=html>TITLE</strong> element is required in all HTML documents.</p>
+
+<h2><a name="xhtml-case">Uppercase letters in XHTML tags</a></h2>
+
+
+</body>
+</html>
+
